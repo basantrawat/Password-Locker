@@ -15,8 +15,21 @@ app.config['MYSQL_DB'] = 'passLocker'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 
+charToEscape = ['"', "'", "`", "\\"]
+
+def escapeChars(word):
+    newWord=[]
+    for i in word:
+        if(i in charToEscape):
+            continue
+        else:
+            newWord.append(i)
+    strNewWord = ''.join(newWord)
+    return strNewWord
+
+
 def randomStringGen():
-    rand_characters = string.ascii_letters + string.digits + string.punctuation
+    rand_characters = string.ascii_letters + string.digits + escapeChars(string.punctuation)
     randomStr = ''.join(random.choices(rand_characters, k=3))
     return randomStr
 
@@ -40,11 +53,11 @@ def passLocker():
     if(request.method=='POST'):
         site = request.form.get('site')
         username = request.form.get('username')
-        password = request.form.get('password') 
-
+        password = request.form.get('password')
         password = list(password)
+
         for i in range(len(password)):
-            password[i] = chr(ord(password[i])+3) + randomStringGen()
+            password[i] = chr(ord(password[i])+2) + randomStringGen()
 
         encryptedStrPwd = ''.join(password)
 
@@ -55,34 +68,27 @@ def passLocker():
     else:
         return render_template('passLocker.html', msg="")
 
-
+@app.route('/decryptPass', methods=['GET', 'POST'])
 @app.route('/getPass', methods=['GET', 'POST'])
 def fetchData():
-        query = """SELECT * FROM AccountDetails"""
-        posts = select(query)
-        return render_template('getPass.html', posts=posts)
+    query = """SELECT * FROM AccountDetails"""
+    posts = select(query)
 
-
-@app.route('/decryptPass', methods=['GET', 'POST'])
-def pwdDecrypt():
     if(request.method=='POST'):
         sno = request.form.get('sno')
-        query = f"""SELECT * FROM AccountDetails WHERE sno='{sno}'"""
-        record = select(query)
-        encryptedPwd = list(record[0]['password'])
+        encryptedPwd = list(sno)
         y=len(encryptedPwd)
         decryptedPwd = []
         for i in range(0,y,4):
-            decryptedPwd.append(chr(ord(encryptedPwd[i])-3))
+            decryptedPwd.append(chr(ord(encryptedPwd[i])-2))
 
         strDecryptedPwd = ''.join(decryptedPwd)
-        return render_template('decrypt.html', record=record, decryptedPwd=strDecryptedPwd)
+        return render_template('getPass.html', posts=posts, decryptedPwd=strDecryptedPwd)
         # return render_template('decrypt.html', decryptedPwd=decryptedPwd)
     
     else:
-        return render_template('passLocker.html')
+        return render_template('getPass.html', posts=posts)
 
 
 app.run(debug=True)
-
 

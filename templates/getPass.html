@@ -19,14 +19,21 @@
       <td>{{post['password']}}</td>
       <td>
         <form action="/decryptPass" method="post">
-          <input type="hidden" name="sno" value="{{post['sno']}}" />
+          <input type="hidden" name="sno" value="{{post['password']}}" />
           <input type="submit" class="btn btn-success" value="Decrypt" />
         </form>
       </td>
-
     </tr>
     {% endfor %}
   </tbody>
 </table>
+
+{% if decryptedPwd %}
+<span class="table"><b>Password :  </b><input type="text" value="{{decryptedPwd}}" maxlength='40' size='40' readonly></span>
+
+{%else%}
+<span class="table" type="hidden"></span>
+{% endif %}
+
 
 {% endblock %}
