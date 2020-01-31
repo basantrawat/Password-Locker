@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">S.No.</th>
+      <th scope="col">Site</th>
+      <th scope="col">Username</th>
+      <th scope="col">Password</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope='row'>{{record[0]['sno']}}</th>
+      <td>{{record[0]['site']}}</td>
+      <td>{{record[0]['username']}}</td>
+      <td>{{decryptedPwd}}</td>
+    </tr>
+  </tbody>
+</table>
+
+{% endblock %}
