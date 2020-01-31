@@ -37,7 +37,7 @@ def insert(query):
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/passLocker', methods=['GET', 'POST'])
 def passLocker():
-    if(request.method=='post'):
+    if(request.method=='POST'):
         site = request.form.get('site')
         username = request.form.get('username')
         password = request.form.get('password') 
@@ -50,7 +50,6 @@ def passLocker():
 
         query = f"""INSERT INTO AccountDetails (site,username,password) VALUES ('{site}','{username}','{encryptedStrPwd}')"""
         insert(query)
-
         return render_template('passLocker.html', msg="Added Successfully")
 
     else:
