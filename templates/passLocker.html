@@ -1,6 +1,8 @@
 {% extends 'layout.html' %}
 {% block body %}
 
+<!-- RegEx Code for pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$&*])[A-Za-z\d[!@#$&*]{8,}$" -->
+
 <form name="passInput" class="indented" action="/passLocker" method="post">
     <div class="control-group">
       <div class="form-group floating-label-form-group controls">
@@ -19,7 +21,7 @@
     <div class="control-group">
       <div class="form-group col-xs-12 floating-label-form-group controls">
         <label>Password</label>
-        <input type="text" class="form-control" placeholder="Password" name='password' required data-validation-required-message="Please enter your phone number." pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$&*])[A-Za-z\d[!@#$&*]{8,}$">
+        <input type="text" class="form-control" placeholder="Password" name='password' required data-validation-required-message="Please enter your phone number.">
         <p class="help-block text-danger"></p>
       </div>
     </div>

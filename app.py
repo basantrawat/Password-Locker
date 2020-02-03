@@ -15,35 +15,20 @@ app.config['MYSQL_DB'] = 'passLocker'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 
-charToEscape = ['"', "'", "`", "\\"]
-
-def escapeChars(word):
-    newWord=[]
-    for i in word:
-        if(i in charToEscape):
-            continue
-        else:
-            newWord.append(i)
-    strNewWord = ''.join(newWord)
-    return strNewWord
-
-
 def randomStringGen():
-    rand_characters = string.ascii_letters + string.digits + escapeChars(string.punctuation)
+    rand_characters = string.ascii_letters + string.digits + string.punctuation #+ escapeChars(string.punctuation)
     randomStr = ''.join(random.choices(rand_characters, k=3))
     return randomStr
 
 def select(query):
-    # db = MySQLdb.connect("localhost","myusername","mypassword","mydbname" )
     cur = mysql.connection.cursor()
     cur.execute(query)
     data = cur.fetchall()
     return (data)
 
-def insert(query):
-    # db = MySQLdb.connect("localhost","myusername","mypassword","mydbname" )
+def insert(query, dataSet):
     cur = mysql.connection.cursor()
-    cur.execute(query)
+    cur.execute(query, dataSet)
     mysql.connection.commit()
 
 
@@ -55,14 +40,13 @@ def passLocker():
         username = request.form.get('username')
         password = request.form.get('password')
         password = list(password)
-
         for i in range(len(password)):
             password[i] = chr(ord(password[i])+2) + randomStringGen()
 
         encryptedStrPwd = ''.join(password)
-
-        query = f"""INSERT INTO AccountDetails (site,username,password) VALUES ('{site}','{username}','{encryptedStrPwd}')"""
-        insert(query)
+        dataSet = (site, username, encryptedStrPwd)
+        query = """INSERT INTO AccountDetails (site,username,password) VALUES (%s, %s, %s)"""
+        insert(query, dataSet)
         return render_template('passLocker.html', msg="Added Successfully")
 
     else:
@@ -84,7 +68,6 @@ def fetchData():
 
         strDecryptedPwd = ''.join(decryptedPwd)
         return render_template('getPass.html', posts=posts, decryptedPwd=strDecryptedPwd)
-        # return render_template('decrypt.html', decryptedPwd=decryptedPwd)
     
     else:
         return render_template('getPass.html', posts=posts)
