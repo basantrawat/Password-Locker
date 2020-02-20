@@ -5,8 +5,11 @@ Password Locker does an amazing job of storing your account information.
 
 ## Password Security
 
-For Password Security we have added salt to your original password and then done the encryption which keeps the password very secure in Database.
+For Password Security we have used cipher encryption, and on top of it we have added a salt to it. Salting makes your password more secure from being hacked & cracked by someone.
 
-DataBase details are not shared in this GitHub Repo, so that you will have to make by your self only.
+DataBase details are not shared in this GitHub Repo, so that you will have to make by yourself only.
 
-`This Application is still on Development Phase`
+DB_Name - "passlocker"   
+Table_Name - "accountdetails" (sno(int),site(varchar),username(varchar),password(varchar(1000)),date(timestamp))   
+
+`This Application is still on Development Phase.`

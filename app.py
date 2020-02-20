@@ -77,4 +77,6 @@ def fetchData():
         return render_template('getPass.html', posts=posts)
 
 
-app.run(debug=True)
+
+if __name__ == "__main__":
+    app.run(debug=True)
