@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+{% block title %}Add-Details{% endblock %}
+
+{% block main_content %}
+<div class="container-fluid p-5 add-details">
+    <div class="row jstify-content-start">
+        <div class="col-lg-3 col-md-2"></div>
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <form name="passInput" class="indented" action="/add_details" method="post">
+                <div class="control-group">
+                    <div class="form-group floating-label-form-group controls font-weight-bold">
+                        <label>Site/Service</label>
+                        <input type="text" class="form-control" placeholder="Site/Service Name" name="website" required
+                            data-validation-required-message="Please enter your name." />
+                        <p cslass="help-block text-danger"></p>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="form-group floating-label-form-group controls font-weight-bold">
+                        <label>Username/Mail_ID</label>
+                        <input type="text" class="form-control" placeholder="Username" name="username" required
+                            data-validation-required-message="Please enter your email address." />
+                        <p class="help-block text-danger"></p>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="form-group col-xs-12 floating-label-form-group controls font-weight-bold">
+                        <label>Password</label>
+                        <input type="text" class="form-control" placeholder="Password" name="password" required
+                            data-validation-required-message="Please enter your phone number." />
+                        <p class="help-block text-danger"></p>
+                    </div>
+                </div>
+                <br />
+                <div id="success"></div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary px-5 font-weight-bold" id="sendMessageButton">
+                        Send
+                    </button>
+                </div>
+                <span id="successmsg">{{msg}}</span>
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-2"></div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,2 +1,4 @@
 __pycache__
 .gitignore
+static/bootstrap-4.0.0
+.flaskenv

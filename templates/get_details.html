@@ -1,0 +1,59 @@
+{% extends 'layout.html' %} 
+{% block title %}Add-Details{% endblock %}
+
+{% block main_content %}
+<div class="table-responsive p-lg-5 p-sm-2">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">S.No.</th>
+        <th scope="col">Site</th>
+        <th scope="col">Username</th>
+        <th scope="col">Password</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+      <tr>
+        <th scope="row">{{post['sno']}}</th>
+        <td>{{post['site']}}</td>
+        <td>{{post['username']}}</td>
+        <td id="{{post['sno']}}">{{post['password']}}</td>
+        <td id="border-removed">
+          <input type="button" id="decrypt-btn" class="btn btn-secondary" onclick="decryptPassword('{{post['sno']}}')"
+            data-toggle="modal" data-target="#exampleModal" value="Decrypt" />
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Outputing Decrypted Password and Copying it -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="decrypted-pass" style="text-align: center" hidden>
+          <input id="copy-pass" type="text" style="font-size: 2em;text-align: center; margin: 1em 0;" readonly>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="copyPassword()">Copy Password</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block custom_script %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block title %}Index{% endblock %}
+{% block head %}
+  {{ super () }}
+  <style>
+    body{
+      overflow-x:hidden;
+      background: '#ada996';
+      background: linear-gradient(to right, #ada996, #f2f2f2, #dbdbdb, #eaeaea);
+    }
+  </style>
+{% endblock %}
+
+{% block main_content %}
+<div class="container col-md-8 margin-to-top">
+    <div class="row justify-content-between product-description">
+      <div class="col-md-3 col-sm">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" height=200px/>
+      </div>
+      <div class="col-md-7 col-sm">
+        <h1 class="cover-heading">Password Manager</h1>
+          <p class="lead">This application helps you to store your account details and passwords safe and securely
+          </p>
+          <p class="lead">
+            <a href="{{url_for('login')}}" class="btn btn-lg btn-secondary">Get Started</a>
+          </p>  
+      </div>
+    </div>
+    <div class="row" style="bottom: 0;position: fixed;width: 100%;text-align: center;">
+      <div class="col-md-8 col-sm">
+      <footer>
+        <div class="inner">
+          <p> All Copyright Reserved to &copy; <a href="https://linkedin.com/in/basantsinghrawat/">Basant S. Rawat</a></p>
+        </div>
+      </footer>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

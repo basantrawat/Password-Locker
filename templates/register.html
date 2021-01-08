@@ -1,0 +1,55 @@
+{% extends 'layout.html'%}
+{% block title %}Register/Login{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <style>
+        body{
+            background: '#ada996';
+            background: linear-gradient(to right, #ada996, #f2f2f2, #dbdbdb, #eaeaea);
+        }
+    </style>
+{% endblock %}
+
+{% block navigation %}{% endblock %}
+{% block main_content %}
+<body class="text-center">
+    
+    <form class="form-signin" action="{{url_for('register')}}" method="POST">
+        <a href="{{url_for('index')}}"><img class="mb-4" src="{{ url_for('static', filename='images/logo.png') }}" alt="" width="100" style="filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));"></a>
+        <h1 class="h3 mb-3 font-weight-normal">Register/Sign Up</h1>
+        {% if message %}
+            <div class="alert alert-danger" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required autofocus>
+        
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+        
+        <label for="inputRePassword" class="sr-only">Re-Password</label>
+        <input type="password" id="inputRePassword" name="repassword" class="form-control" placeholder="Re-Password" required>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" disabled>Sign Up</button><br>
+        <span>Sign In if already registerd? <a href="{{url_for('login')}}">Sign In</a></span>
+        <p class="mt-5 mb-3 text-muted">&copy; 2021-2022</p>
+    </form>
+</body>
+{% endblock%}
+
+{% block custom_script %}
+<script>
+    $("#inputRePassword").focusout(function(){
+        if($("#inputPassword").val()==$("#inputRePassword").val()){
+            $("button").removeAttr("disabled");
+            $("#inputRePassword").css({'box-shadow': '0 0 0 0.2rem rgb(0 128 0 / 40%)'});
+        }
+        else{
+            $("button").attr("disabled", "");
+            $("#inputRePassword").css({'box-shadow': '0 0 0 0.2rem rgb(255 0 0 / 40%) '});
+        }
+    });
+</script>
+{% endblock %}
