@@ -10,8 +10,9 @@ Database file is not included in this GitHub repo, so you will have to create it
    
 DB_Name - "pass_locker"    
 
-Table_Name - 
-"accountdetails" (sno(int),site(varchar),username(varchar),password(varchar(1000)))   
-"user_details" (u_id(int),email_id(varchar),password(varchar),plain_pass(varchar))
+Table_Structure:
+![table 1](static/images/app/db-table1.jpg)
+![table 2](static/images/app/db-table2.jpg)
+
 
 `This Application is still in Development Phase.`

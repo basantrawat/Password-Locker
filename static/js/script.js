@@ -2,7 +2,8 @@ function decryptPassword(id){
     $(document).ready(function() {
         $.ajax({
             data : {
-                sno: $('#'+id).text()
+                pass: $('#pass-'+id).val(),
+                key: $('#key-'+id).val()
                 },
             type : 'POST',
             url : '/decrypt_details'

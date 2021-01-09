@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
-from datetime import datetime
-import string
-import random
+from cryptography.fernet import Fernet
 import json
 
 
 app = Flask(__name__)
 app.secret_key = 'SECRET_KEY_FOR_SESSION'
+# In Production you should store above key in .env file
 
 # MYSQL connectivity through flask-mysqldb package
 app.config['MYSQL_USER'] = 'root'
@@ -39,13 +38,23 @@ def insert(query, params):
     except Exception as e:
         return e
 
+MASTER_SECRET_KEY = b'zEJjbP2ETor-wsnOQn-6-vpODlGECjZcfSgVzA_cjQY='
+# In Production you should store above key in .env file
 
-def random_string():
-    rand_char = string.ascii_letters + string.digits + string.punctuation
-    rand_str = ''.join(random.choices(rand_char, k=3))
-    return rand_str
+def encrypt_pass(salt, password):
+    key = MASTER_SECRET_KEY + salt
+    f = Fernet(key)
+    plain_pass = bytes(password, 'utf-8')
+    encrypted_pass = f.encrypt(plain_pass)
+    return encrypted_pass
 
+def decrypt_pass(salt, encrypted_password):
+    key = MASTER_SECRET_KEY + bytes(salt, 'utf-8')
+    f = Fernet(key)
+    plain_pass = f.decrypt(bytes(encrypted_password,'utf-8'))
+    return plain_pass.decode('utf-8')
 
+@app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -58,39 +67,34 @@ def add_details():
             website = request.form['website']
             username = request.form['username']
             password = request.form['password']
-            password = list(password)
+            
+            salt = Fernet.generate_key()
+            encrypted_pass = encrypt_pass(salt, password)
 
-            # Adding the random characters
-            password = [chr(ord(password[i])+2) + random_string()
-                        for i in range(len(password))]    # Using List comprehension
-            encrypted_pass = ''.join(password)
             # for data insertion in db
-            params = (website, username, encrypted_pass)
-            query = """ INSERT INTO AccountDetails (site,username,password) VALUES (%s, %s, %s) """
-            message = insert(query, dataset)  # calling our custom insert function
+            params = (website, username, encrypted_pass, salt, password,)
+            # I have also added the plain password in db in development phase
+            # but should remove it for Security reasons
+            query = """ INSERT INTO ac_dtl_fernet (site,username,password, pass_key, plain_pass) VALUES (%s, %s, %s, %s, %s) """
+            message = insert(query, params)
             return render_template('add_details.html', msg=message)
         else:
             return render_template('add_details.html', msg="")
     else:
         return redirect(url_for('login'))
 
-
 @app.route('/decrypt_details', methods=['POST'])
 def decrypt_details():
-    value_of_sno = request.form['sno']
-    encrypted_pass = list(value_of_sno)
-    decrypted_pass = [chr(ord(encrypted_pass[i])-2)
-                      for i in range(0, len(encrypted_pass), 4)]
-    decrypted_pass = ''.join(decrypted_pass)
+    encrypted_pass = request.form['pass']
+    pass_key = request.form['key']
+    decrypted_pass = decrypt_pass(pass_key, encrypted_pass)
     return jsonify({'output': decrypted_pass})
-
 
 @app.route('/get_details', methods=['GET', 'POST'])
 def get_details():
     if('username' in session):
-        query = """ SELECT * FROM AccountDetails """
+        query = """ SELECT * FROM ac_dtl_fernet """
         account_details = select(query, ())
-        print(len(account_details))
         return render_template('get_details.html', posts=account_details)
     else:
         return redirect(url_for('login'))
@@ -106,6 +110,8 @@ def register():
         user_details = select(query,(email,))
         if(len(user_details)==0 and password==repassword):
             password_hash = generate_password_hash(password)
+            # I have also added the plain password in db in development phase
+            # but should remove it for Security reasons
             query = """ INSERT INTO user_details (email_id,password,plain_pass) VALUES (%s, %s, %s) """
             message = insert(query, (email, password_hash, password,))  # calling our custom insert function 
             return redirect(url_for('login'))
@@ -113,8 +119,10 @@ def register():
             return render_template('register.html', message="Email Id already registered!!!")
         elif(password!=repassword):
             return render_template('register.html', message="Password didn't matched!!!")
-
-    return render_template('register.html')
+    if('username' not in session):
+        return render_template('register.html')
+    else:
+        return render_template('add_details.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -132,16 +140,18 @@ def login():
                 return redirect(url_for('add_details'))
             else:
                 return render_template('login.html', message="Incorrect username or password!")
-        return render_template('login.html', message="Incorrect username or password!")
-    
-    return render_template('login.html')
+        return render_template('login.html', message="Incorrect username or password!")  
+    if('username' not in session):
+        return render_template('login.html')
+    else:
+        return render_template('add_details.html')
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
-
 if __name__ == "__main__":
     app.run(debug=True)
+
 

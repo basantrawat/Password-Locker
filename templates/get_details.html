@@ -1,8 +1,8 @@
 {% extends 'layout.html' %} 
-{% block title %}Add-Details{% endblock %}
+{% block title %}Get-Details{% endblock %}
 
 {% block main_content %}
-<div class="table-responsive p-lg-5 p-sm-2">
+<div class="table-responsive p-lg-5 p-sm-2 px-8">
   <table class="table table-bordered">
     <thead>
       <tr>
@@ -18,10 +18,11 @@
         <th scope="row">{{post['sno']}}</th>
         <td>{{post['site']}}</td>
         <td>{{post['username']}}</td>
-        <td id="{{post['sno']}}">{{post['password']}}</td>
-        <td id="border-removed">
+        <td id="border-removed" style="width:100px;">
+          <input type="hidden" id="pass-{{post['sno']}}" value="{{post['password']}}">
+          <input type="hidden" id="key-{{post['sno']}}" value="{{post['pass_key']}}">
           <input type="button" id="decrypt-btn" class="btn btn-secondary" onclick="decryptPassword('{{post['sno']}}')"
-            data-toggle="modal" data-target="#exampleModal" value="Decrypt" />
+            data-toggle="modal" data-target="#exampleModal" value="Decrypt" >
         </td>
       </tr>
       {% endfor %}
